@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="A simple, clean, and persistent Todo App Dashboard for managing tasks efficiently.">
+  <title>Todo App Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="brand-icon">✓</div>
+        <h1>Task Dashboard</h1>
+      </div>
+      <div class="header-date" id="header-date"></div>
+    </header>
+
+    <!-- Stats Summary Section -->
+    <section class="stats-section" aria-label="Task Statistics">
+      <div class="stat-card">
+        <div class="stat-icon total-icon">📋</div>
+        <div class="stat-content">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Total Tasks</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon active-icon">⏳</div>
+        <div class="stat-content">
+          <span class="stat-value" id="stat-active">0</span>
+          <span class="stat-label">Active Tasks</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon completed-icon">✅</div>
+        <div class="stat-content">
+          <span class="stat-value" id="stat-completed">0</span>
+          <span class="stat-label">Completed</span>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon high-icon">🔥</div>
+        <div class="stat-content">
+          <span class="stat-value" id="stat-high">0</span>
+          <span class="stat-label">High Priority</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div class="progress-header">
+        <span>Completion Progress</span>
+        <span id="progress-percentage">0%</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progress-fill"></div>
+      </div>
+    </div>
+
+    <!-- Main Content Area: Form + Task List -->
+    <div class="dashboard-grid">
+      <!-- Task Form Panel -->
+      <aside class="panel form-panel">
+        <h2 id="form-heading">Add New Task</h2>
+        <form id="task-form">
+          <input type="hidden" id="task-id">
+
+          <div class="form-group">
+            <label for="task-title">Task Title *</label>
+            <input type="text" id="task-title" placeholder="What needs to be done?" required autocomplete="off">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="task-category">Category</label>
+              <select id="task-category">
+                <option value="General">General</option>
+                <option value="Work">Work</option>
+                <option value="Personal">Personal</option>
+                <option value="Health">Health</option>
+                <option value="Finance">Finance</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="task-priority">Priority</label>
+              <select id="task-priority">
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="task-duedate">Due Date</label>
+            <input type="date" id="task-duedate">
+          </div>
+
+          <div class="form-group">
+            <label for="task-notes">Notes (Optional)</label>
+            <textarea id="task-notes" rows="3" placeholder="Add additional details..."></textarea>
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" id="submit-btn" class="btn btn-primary">Add Task</button>
+            <button type="button" id="cancel-edit-btn" class="btn btn-secondary" style="display: none;">Cancel</button>
+          </div>
+        </form>
+      </aside>
+
+      <!-- Task List Panel -->
+      <main class="panel list-panel">
+        <!-- Controls & Filters -->
+        <div class="list-controls">
+          <div class="search-box">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="search-input" placeholder="Search tasks...">
+          </div>
+
+          <div class="filters-group">
+            <select id="filter-status" aria-label="Filter by Status">
+              <option value="all">Status: All</option>
+              <option value="active">Active Only</option>
+              <option value="completed">Completed Only</option>
+            </select>
+
+            <select id="filter-priority" aria-label="Filter by Priority">
+              <option value="all">Priority: All</option>
+              <option value="High">High</option>
+              <option value="Medium">Medium</option>
+              <option value="Low">Low</option>
+            </select>
+
+            <select id="filter-category" aria-label="Filter by Category">
+              <option value="all">Category: All</option>
+              <option value="General">General</option>
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Health">Health</option>
+              <option value="Finance">Finance</option>
+            </select>
+
+            <select id="sort-by" aria-label="Sort Tasks">
+              <option value="createdAt">Sort: Created Date</option>
+              <option value="dueDate">Sort: Due Date</option>
+              <option value="priority">Sort: Priority</option>
+              <option value="title">Sort: Title (A-Z)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- List Header Bar -->
+        <div class="list-header">
+          <span class="list-count" id="list-count">Showing 0 tasks</span>
+          <button type="button" id="clear-completed-btn" class="btn btn-text">Clear Completed</button>
+        </div>
+
+        <!-- Task List Container -->
+        <ul class="task-list" id="task-list"></ul>
+
+        <!-- Empty State -->
+        <div class="empty-state" id="empty-state" style="display: none;">
+          <div class="empty-icon">📝</div>
+          <h3>No tasks found</h3>
+          <p id="empty-message">Add a task using the form or adjust your search filters.</p>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Custom Confirmation Modal -->
+  <div class="modal-overlay" id="confirm-modal" style="display: none;">
+    <div class="modal-card">
+      <h3 id="modal-title">Confirm Action</h3>
+      <p id="modal-message">Are you sure you want to perform this action?</p>
+      <div class="modal-actions">
+        <button type="button" id="modal-cancel-btn" class="btn btn-secondary">Cancel</button>
+        <button type="button" id="modal-confirm-btn" class="btn btn-danger">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
